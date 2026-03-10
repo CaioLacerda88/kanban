@@ -92,21 +92,21 @@
 
 ---
 
-## Part 6: Backend API
+## Part 6: Backend API - COMPLETE
 
 **Goal**: Full CRUD REST API for Kanban data, backed by SQLite, protected by JWT auth.
 
-- [ ] Create `backend/database.py` — SQLite connection helper, creates all tables on startup if they don't exist; seeds a default board for new users
-- [ ] Create `backend/models.py` — Pydantic models for Board, Column, Card (request and response shapes)
-- [ ] Create `backend/routers/kanban.py` with routes (all require valid JWT cookie):
+- [x] Create `backend/database.py` — SQLite connection helper, creates all tables on startup if they don't exist; seeds a default board for new users
+- [x] Create `backend/models.py` — Pydantic models for Board, Column, Card (request and response shapes)
+- [x] Create `backend/routers/kanban.py` with routes (all require valid JWT cookie):
   - `GET /api/board` — returns full board state for the authenticated user
   - `PUT /api/board/columns/{column_id}` — rename a column
   - `POST /api/board/cards` — create a card in a column
   - `PUT /api/board/cards/{card_id}` — update card title or details
   - `DELETE /api/board/cards/{card_id}` — delete a card
   - `PUT /api/board/cards/{card_id}/move` — move card to a different column and position
-- [ ] Backend unit tests (pytest + httpx): each route, both success and auth-failure (401) cases
-- [ ] Add a Docker volume in `docker-compose.yml` for `/data` to persist the SQLite file
+- [x] Backend unit tests (pytest + httpx): each route, both success and auth-failure (401) cases
+- [x] Add a Docker volume in `docker-compose.yml` for `/data` to persist the SQLite file
 
 **Success criteria**:
 - All routes return correct data and HTTP status codes
