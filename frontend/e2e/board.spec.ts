@@ -13,7 +13,7 @@ test.describe('Board', () => {
     await expect(page.getByRole('button', { name: 'Backlog' })).toBeVisible();
     await expect(page.getByRole('button', { name: 'To Do' })).toBeVisible();
     await expect(page.getByRole('button', { name: 'In Progress' })).toBeVisible();
-    await expect(page.getByRole('button', { name: 'Review' })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Review', exact: true })).toBeVisible();
     await expect(page.getByRole('button', { name: 'Done' })).toBeVisible();
   });
 

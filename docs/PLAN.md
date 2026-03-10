@@ -116,19 +116,19 @@
 
 ---
 
-## Part 7: Frontend + Backend Integration
+## Part 7: Frontend + Backend Integration - COMPLETE
 
 **Goal**: Replace in-memory state with live API calls so the board is persistent.
 
-- [ ] Create `frontend/src/lib/api.ts` — typed fetch wrapper for all backend endpoints
-- [ ] Update `useBoard` hook:
+- [x] Create `frontend/src/lib/api.ts` — typed fetch wrapper for all backend endpoints
+- [x] Update `useBoard` hook:
   - Fetch initial board state from `GET /api/board` on mount
   - Call the appropriate API route on each mutation (add, update, delete card; rename column; move card)
   - Track loading state; surface errors to the UI
-- [ ] Remove hard dependency on `src/data/seed.ts` in `KanbanApp.tsx` (seeding is now server-side)
-- [ ] Add a loading spinner while the board fetches on initial load
-- [ ] Update Jest tests: mock `lib/api.ts` instead of relying on seed data
-- [ ] Update Playwright e2e tests to run against the full stack (requires backend running)
+- [x] Remove hard dependency on `src/data/seed.ts` in `KanbanApp.tsx` (seeding is now server-side)
+- [x] Add a loading spinner while the board fetches on initial load
+- [x] Update Jest tests: mock `lib/api.ts` instead of relying on seed data
+- [x] Update Playwright e2e tests to run against the full stack (requires backend running)
 
 **Success criteria**:
 - Board state persists across page refreshes

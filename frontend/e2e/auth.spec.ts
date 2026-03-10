@@ -30,6 +30,13 @@ test.describe('Auth', () => {
         body: JSON.stringify({ username: 'user' }),
       })
     );
+    await page.route('/api/board', (route) =>
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ id: 1, name: 'Project Board', columns: [] }),
+      })
+    );
     await page.goto('/');
     await page.getByLabel('Username').fill('user');
     await page.getByLabel('Password').fill('password');

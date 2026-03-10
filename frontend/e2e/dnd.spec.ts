@@ -35,7 +35,7 @@ test.describe('Drag and drop', () => {
   test('drag a card within the same column to reorder', async ({ page }) => {
     const backlogColumn = page.locator('[data-testid="column"][data-column-name="Backlog"]');
     const firstCard = backlogColumn.getByRole('button', { name: /Set up CI\/CD pipeline/ });
-    const secondCard = backlogColumn.getByRole('button', { name: /Define API contracts/ });
+    const secondCard = backlogColumn.getByRole('button', { name: /Write API documentation/ });
 
     const firstBox = await firstCard.boundingBox();
     const secondBox = await secondCard.boundingBox();
@@ -54,6 +54,6 @@ test.describe('Drag and drop', () => {
 
     // Both cards remain in the Backlog column
     await expect(backlogColumn.getByRole('button', { name: /Set up CI\/CD pipeline/ })).toBeVisible();
-    await expect(backlogColumn.getByRole('button', { name: /Define API contracts/ })).toBeVisible();
+    await expect(backlogColumn.getByRole('button', { name: /Write API documentation/ })).toBeVisible();
   });
 });
