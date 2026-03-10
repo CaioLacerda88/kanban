@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
+import { useFocusTrap } from '@/hooks/useFocusTrap';
 
 interface Props {
   columnName: string;
@@ -12,6 +13,8 @@ export default function AddCardModal({ columnName, onAdd, onClose }: Props) {
   const [title, setTitle] = useState('');
   const [details, setDetails] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
+  const dialogRef = useFocusTrap();
+  const titleId = useId();
 
   useEffect(() => {
     inputRef.current?.focus();
@@ -33,10 +36,11 @@ export default function AddCardModal({ columnName, onAdd, onClose }: Props) {
 
   return (
     <div
+      ref={dialogRef}
       className="fixed inset-0 z-50 flex items-center justify-center"
       role="dialog"
       aria-modal="true"
-      aria-label="Add card"
+      aria-labelledby={titleId}
     >
       <div
         className="modal-backdrop absolute inset-0 bg-black/40 backdrop-blur-sm"
@@ -45,7 +49,7 @@ export default function AddCardModal({ columnName, onAdd, onClose }: Props) {
       <div className="modal-content relative z-10 w-full max-w-md mx-4 bg-white rounded-xl shadow-2xl overflow-hidden">
         <div className="h-1 bg-purple-secondary" />
         <div className="p-6">
-          <h2 className="text-dark-navy font-semibold text-lg mb-1">Add card</h2>
+          <h2 id={titleId} className="text-dark-navy font-semibold text-lg mb-1">Add card</h2>
           <p className="text-gray-text text-sm mb-5">Adding to: {columnName}</p>
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             <div>

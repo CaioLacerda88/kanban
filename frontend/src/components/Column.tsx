@@ -19,22 +19,23 @@ export default function Column({ column, cards, actions }: Props) {
   const [nameValue, setNameValue] = useState(column.name);
   const [addingCard, setAddingCard] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const skipBlurRef = useRef(false);
 
   const { setNodeRef, isOver } = useDroppable({ id: column.id });
 
   useEffect(() => {
-    if (editing) {
-      inputRef.current?.select();
-    }
+    if (editing) inputRef.current?.select();
   }, [editing]);
+
+  // Keep local value in sync if column is renamed externally
+  useEffect(() => {
+    if (!editing) setNameValue(column.name);
+  }, [column.name, editing]);
 
   const commitRename = () => {
     const trimmed = nameValue.trim();
-    if (trimmed) {
-      actions.renameColumn(column.id, trimmed);
-    } else {
-      setNameValue(column.name);
-    }
+    if (trimmed) actions.renameColumn(column.id, trimmed);
+    else setNameValue(column.name);
     setEditing(false);
   };
 
@@ -43,9 +44,19 @@ export default function Column({ column, cards, actions }: Props) {
     setEditing(false);
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') { skipBlurRef.current = true; commitRename(); }
+    if (e.key === 'Escape') { skipBlurRef.current = true; cancelRename(); }
+  };
+
+  const handleBlur = () => {
+    if (skipBlurRef.current) { skipBlurRef.current = false; return; }
+    commitRename();
+  };
+
   return (
     <>
-      <div className="flex flex-col w-72 min-w-72 bg-gray-50 rounded-xl shadow-sm overflow-hidden">
+      <div className="flex flex-col w-72 min-w-72 bg-gray-50 rounded-xl shadow-sm overflow-hidden" data-testid="column" data-column-name={column.name}>
         {/* Column header */}
         <div className="px-4 pt-4 pb-3 flex items-center justify-between gap-2">
           {editing ? (
@@ -53,11 +64,8 @@ export default function Column({ column, cards, actions }: Props) {
               ref={inputRef}
               value={nameValue}
               onChange={(e) => setNameValue(e.target.value)}
-              onBlur={commitRename}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') commitRename();
-                if (e.key === 'Escape') cancelRename();
-              }}
+              onBlur={handleBlur}
+              onKeyDown={handleKeyDown}
               className="flex-1 text-dark-navy font-semibold text-sm bg-white border border-blue-primary rounded px-2 py-0.5 focus:outline-none"
               aria-label="Rename column"
             />

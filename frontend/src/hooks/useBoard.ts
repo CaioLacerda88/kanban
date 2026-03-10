@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { nanoid } from 'nanoid';
 import { createInitialState } from '@/data/seed';
 import { moveCard as moveFn } from '@/lib/dnd-utils';
@@ -22,16 +22,16 @@ export interface UseBoardReturn {
 export function useBoard(): UseBoardReturn {
   const [state, setState] = useState<BoardState>(createInitialState);
 
-  const renameColumn = (columnId: string, name: string) => {
+  const renameColumn = useCallback((columnId: string, name: string) => {
     setState((s) => ({
       ...s,
       columns: s.columns.map((col) =>
         col.id === columnId ? { ...col, name } : col
       ),
     }));
-  };
+  }, []);
 
-  const addCard = (columnId: string, card: Omit<Card, 'id'>) => {
+  const addCard = useCallback((columnId: string, card: Omit<Card, 'id'>) => {
     const newCard: Card = { id: nanoid(), ...card };
     setState((s) => ({
       ...s,
@@ -42,9 +42,9 @@ export function useBoard(): UseBoardReturn {
           : col
       ),
     }));
-  };
+  }, []);
 
-  const updateCard = (cardId: string, patch: Partial<Omit<Card, 'id'>>) => {
+  const updateCard = useCallback((cardId: string, patch: Partial<Omit<Card, 'id'>>) => {
     setState((s) => ({
       ...s,
       cards: {
@@ -52,12 +52,11 @@ export function useBoard(): UseBoardReturn {
         [cardId]: { ...s.cards[cardId], ...patch },
       },
     }));
-  };
+  }, []);
 
-  const deleteCard = (cardId: string) => {
+  const deleteCard = useCallback((cardId: string) => {
     setState((s) => {
-      const cards = { ...s.cards };
-      delete cards[cardId];
+      const { [cardId]: _, ...cards } = s.cards;
       return {
         ...s,
         cards,
@@ -67,11 +66,11 @@ export function useBoard(): UseBoardReturn {
         })),
       };
     });
-  };
+  }, []);
 
-  const moveCard = (cardId: string, toColumnId: string, toIndex: number) => {
+  const moveCard = useCallback((cardId: string, toColumnId: string, toIndex: number) => {
     setState((s) => moveFn(s, cardId, toColumnId, toIndex));
-  };
+  }, []);
 
   return {
     state,

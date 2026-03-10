@@ -1,4 +1,4 @@
-import { findColumnOfCard, moveCard } from '@/lib/dnd-utils';
+import { findColumnOfCard, moveCard, resolveDrop } from '@/lib/dnd-utils';
 import type { BoardState } from '@/types/kanban';
 
 function makeState(): BoardState {
@@ -63,5 +63,21 @@ describe('moveCard', () => {
     const originalIds = [...state.columns[0].cardIds];
     moveCard(state, 'c1', 'col-b', 0);
     expect(state.columns[0].cardIds).toEqual(originalIds);
+  });
+});
+
+describe('resolveDrop', () => {
+  it('resolves drop onto a card — returns that card position', () => {
+    expect(resolveDrop(makeState(), 'c1', 'c3')).toEqual({ toColumnId: 'col-a', toIndex: 2 });
+    expect(resolveDrop(makeState(), 'c1', 'c4')).toEqual({ toColumnId: 'col-b', toIndex: 0 });
+  });
+
+  it('resolves drop onto a column — returns end of column', () => {
+    expect(resolveDrop(makeState(), 'c1', 'col-b')).toEqual({ toColumnId: 'col-b', toIndex: 2 });
+    expect(resolveDrop(makeState(), 'c1', 'col-c')).toEqual({ toColumnId: 'col-c', toIndex: 0 });
+  });
+
+  it('returns null for unknown overId', () => {
+    expect(resolveDrop(makeState(), 'c1', 'unknown')).toBeNull();
   });
 });

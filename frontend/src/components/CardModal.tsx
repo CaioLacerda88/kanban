@@ -1,7 +1,8 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 import type { Card } from '@/types/kanban';
+import { useFocusTrap } from '@/hooks/useFocusTrap';
 
 interface Props {
   card: Card;
@@ -13,9 +14,11 @@ interface Props {
 
 export default function CardModal({ card, columnName, onSave, onDelete, onClose }: Props) {
   const [title, setTitle] = useState(card.title);
-  const [details, setDetails] = useState(card.details);
+  const [details, setDetails] = useState(card.details ?? '');
   const [confirming, setConfirming] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const dialogRef = useFocusTrap();
+  const titleId = useId();
 
   useEffect(() => {
     inputRef.current?.focus();
@@ -40,10 +43,11 @@ export default function CardModal({ card, columnName, onSave, onDelete, onClose 
 
   return (
     <div
+      ref={dialogRef}
       className="fixed inset-0 z-50 flex items-center justify-center"
       role="dialog"
       aria-modal="true"
-      aria-label="Edit card"
+      aria-labelledby={titleId}
     >
       <div
         className="modal-backdrop absolute inset-0 bg-black/40 backdrop-blur-sm"
@@ -53,7 +57,7 @@ export default function CardModal({ card, columnName, onSave, onDelete, onClose 
         <div className="h-1 bg-blue-primary" />
         <div className="p-6">
           <div className="flex items-start justify-between mb-1">
-            <h2 className="text-dark-navy font-semibold text-lg">Edit card</h2>
+            <h2 id={titleId} className="text-dark-navy font-semibold text-lg">Edit card</h2>
             <button
               onClick={onClose}
               className="text-gray-text hover:text-dark-navy transition-colors ml-4 mt-0.5"

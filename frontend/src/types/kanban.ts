@@ -1,7 +1,7 @@
 export interface Card {
   id: string;
   title: string;
-  details: string;
+  details?: string;
 }
 
 export interface Column {

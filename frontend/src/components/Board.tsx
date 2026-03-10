@@ -13,6 +13,7 @@ import {
 } from '@dnd-kit/core';
 import type { BoardState, Card as CardType } from '@/types/kanban';
 import type { BoardActions } from '@/hooks/useBoard';
+import { resolveDrop } from '@/lib/dnd-utils';
 import Column from './Column';
 
 interface Props {
@@ -34,31 +35,9 @@ export default function Board({ state, actions }: Props) {
 
   const handleDragEnd = ({ active, over }: DragEndEvent) => {
     setActiveCard(null);
-    if (!over) return;
-
-    const activeId = active.id as string;
-    const overId = over.id as string;
-
-    if (activeId === overId) return;
-
-    const allCardIds = new Set(Object.keys(state.cards));
-
-    let toColumnId: string;
-    let toIndex: number;
-
-    if (allCardIds.has(overId)) {
-      const targetCol = state.columns.find((c) => c.cardIds.includes(overId));
-      if (!targetCol) return;
-      toColumnId = targetCol.id;
-      toIndex = targetCol.cardIds.indexOf(overId);
-    } else {
-      const targetCol = state.columns.find((c) => c.id === overId);
-      if (!targetCol) return;
-      toColumnId = targetCol.id;
-      toIndex = targetCol.cardIds.length;
-    }
-
-    actions.moveCard(activeId, toColumnId, toIndex);
+    if (!over || active.id === over.id) return;
+    const result = resolveDrop(state, active.id as string, over.id as string);
+    if (result) actions.moveCard(active.id as string, result.toColumnId, result.toIndex);
   };
 
   const totalCards = state.columns.reduce((n, c) => n + c.cardIds.length, 0);

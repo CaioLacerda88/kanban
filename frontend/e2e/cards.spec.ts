@@ -6,14 +6,13 @@ test.describe('Cards', () => {
   });
 
   test('clicking Add card opens the add modal', async ({ page }) => {
-    // Find the first "Add card" button inside the Backlog column area
-    const backlogColumn = page.locator('.flex.flex-col.w-72').filter({ hasText: 'Backlog' }).first();
+    const backlogColumn = page.locator('[data-testid="column"][data-column-name="Backlog"]');
     await backlogColumn.getByRole('button', { name: /Add card/ }).click();
     await expect(page.getByRole('dialog', { name: 'Add card' })).toBeVisible();
   });
 
   test('adding a card appends it to the column', async ({ page }) => {
-    const backlogColumn = page.locator('.flex.flex-col.w-72').filter({ hasText: 'Backlog' }).first();
+    const backlogColumn = page.locator('[data-testid="column"][data-column-name="Backlog"]');
     await backlogColumn.getByRole('button', { name: /Add card/ }).click();
     const dialog = page.getByRole('dialog', { name: 'Add card' });
     await dialog.getByLabel('Title').fill('My new test card');
@@ -22,7 +21,7 @@ test.describe('Cards', () => {
   });
 
   test('closing add modal via Cancel does not add a card', async ({ page }) => {
-    const backlogColumn = page.locator('.flex.flex-col.w-72').filter({ hasText: 'Backlog' }).first();
+    const backlogColumn = page.locator('[data-testid="column"][data-column-name="Backlog"]');
     await backlogColumn.getByRole('button', { name: /Add card/ }).click();
     const dialog = page.getByRole('dialog', { name: 'Add card' });
     await dialog.getByLabel('Title').fill('Should not appear');

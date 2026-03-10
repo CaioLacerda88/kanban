@@ -36,3 +36,19 @@ export function moveCard(
 
   return { ...state, columns };
 }
+
+export function resolveDrop(
+  state: BoardState,
+  activeId: string,
+  overId: string,
+): { toColumnId: string; toIndex: number } | null {
+  const isCard = Object.prototype.hasOwnProperty.call(state.cards, overId);
+  if (isCard) {
+    const col = state.columns.find((c) => c.cardIds.includes(overId));
+    if (!col) return null;
+    return { toColumnId: col.id, toIndex: col.cardIds.indexOf(overId) };
+  }
+  const col = state.columns.find((c) => c.id === overId);
+  if (!col) return null;
+  return { toColumnId: col.id, toIndex: col.cardIds.length };
+}
