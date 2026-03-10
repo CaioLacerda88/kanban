@@ -19,9 +19,10 @@ import Column from './Column';
 interface Props {
   state: BoardState;
   actions: BoardActions;
+  onLogout?: () => void;
 }
 
-export default function Board({ state, actions }: Props) {
+export default function Board({ state, actions, onLogout }: Props) {
   const [activeCard, setActiveCard] = useState<CardType | null>(null);
 
   const sensors = useSensors(
@@ -57,6 +58,14 @@ export default function Board({ state, actions }: Props) {
           <span className="ml-auto text-white/30 text-xs font-medium tabular-nums">
             {totalCards} {totalCards === 1 ? 'card' : 'cards'}
           </span>
+          {onLogout && (
+            <button
+              onClick={onLogout}
+              className="ml-4 text-white/40 hover:text-white/80 text-xs font-medium transition-colors cursor-pointer"
+            >
+              Sign out
+            </button>
+          )}
         </header>
 
         {/* Board */}

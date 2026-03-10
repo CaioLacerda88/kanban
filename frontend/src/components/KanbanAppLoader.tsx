@@ -2,8 +2,8 @@
 
 import dynamic from 'next/dynamic';
 
-const KanbanApp = dynamic(() => import('./KanbanApp'), { ssr: false });
+const AppRoot = dynamic(() => import('./AppRoot'), { ssr: false });
 
 export default function KanbanAppLoader() {
-  return <KanbanApp />;
+  return <AppRoot />;
 }
