@@ -7,6 +7,7 @@ from pydantic import BaseModel
 
 from auth import CREDENTIALS, create_token, get_current_user
 from database import init_db
+from routers.ai import router as ai_router
 from routers.kanban import router as kanban_router
 
 
@@ -18,6 +19,7 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 app.include_router(kanban_router)
+app.include_router(ai_router)
 
 STATIC_DIR = Path(__file__).parent / "static"
 
