@@ -6,7 +6,11 @@ RUN npm ci
 COPY frontend/ ./
 RUN npm run build
 
-# Stage 2: backend with dev deps for testing
+# Stage 2: run frontend unit tests (gates the production build)
+FROM frontend AS frontend-test
+RUN npm test -- --watchAll=false --ci
+
+# Stage 3: backend with dev deps for testing
 FROM python:3.13-slim AS backend-test
 
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
@@ -18,7 +22,9 @@ RUN uv sync --no-install-project
 
 COPY backend/ .
 
-# Stage 3: production — no dev deps
+RUN uv run pytest -v && touch .pytest-passed
+
+# Stage 4: production — only reached if both test stages passed
 FROM python:3.13-slim
 
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
@@ -29,7 +35,8 @@ COPY backend/pyproject.toml .
 RUN uv sync --no-dev --no-install-project
 
 COPY backend/ .
-COPY --from=frontend /app/frontend/out ./static
+COPY --from=frontend-test /app/frontend/out ./static
+COPY --from=backend-test /app/.pytest-passed /app/.pytest-passed
 
 EXPOSE 8000
 CMD ["uv", "run", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]

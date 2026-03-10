@@ -11,3 +11,7 @@ test-results/
 .DS_Store
 .claude/
 PROJECT.md
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/

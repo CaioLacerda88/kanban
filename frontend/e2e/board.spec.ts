@@ -1,11 +1,12 @@
-import { test, expect } from './fixtures';
+import { test, expect } from '@playwright/test';
+import { login } from './fixtures';
 
 test.describe('Board', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/');
+    await login(page);
   });
 
-  test('page loads and shows the board header', async ({ page }) => {
+  test('loads board from GET /api/board', async ({ page }) => {
     await expect(page.getByRole('heading', { name: 'Project Board' })).toBeVisible();
   });
 
@@ -25,5 +26,31 @@ test.describe('Board', () => {
 
   test('card count is shown in the header', async ({ page }) => {
     await expect(page.getByText(/\d+ cards?/)).toBeVisible();
+  });
+
+  test('renames column: calls PUT /api/board/columns/:id and updates UI', async ({ page }) => {
+    // Set up response listener BEFORE the action
+    const renameResponse = page.waitForResponse(
+      (r) => /\/api\/board\/columns\/\d+/.test(r.url()) && r.request().method() === 'PUT',
+    );
+
+    await page.getByRole('button', { name: 'Done', exact: true }).click();
+    await page.getByLabel('Rename column').fill('Completed');
+    await page.keyboard.press('Enter');
+
+    const res = await renameResponse;
+    expect(res.status()).toBe(200);
+    const body = await res.json();
+    expect(body.name).toBe('Completed');
+    await expect(page.getByRole('button', { name: 'Completed', exact: true })).toBeVisible();
+
+    // Restore original name so later tests are unaffected
+    const restoreResponse = page.waitForResponse(
+      (r) => /\/api\/board\/columns\/\d+/.test(r.url()) && r.request().method() === 'PUT',
+    );
+    await page.getByRole('button', { name: 'Completed', exact: true }).click();
+    await page.getByLabel('Rename column').fill('Done');
+    await page.keyboard.press('Enter');
+    await restoreResponse;
   });
 });
