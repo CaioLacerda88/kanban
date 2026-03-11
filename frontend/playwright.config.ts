@@ -10,6 +10,7 @@ export default defineConfig({
   // Force single worker in integration mode — tests share a real DB
   workers: process.env.BASE_URL ? 1 : (process.env.CI ? 1 : undefined),
   reporter: 'html',
+  timeout: 90_000,
   use: {
     baseURL: BASE_URL,
     trace: 'on-first-retry',

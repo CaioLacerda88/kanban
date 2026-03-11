@@ -18,6 +18,7 @@ export interface UseBoardReturn {
   actions: BoardActions;
   loading: boolean;
   error: string | null;
+  refresh: () => void;
 }
 
 export function useBoard(): UseBoardReturn {
@@ -116,5 +117,6 @@ export function useBoard(): UseBoardReturn {
     actions: { renameColumn, addCard, updateCard, deleteCard, moveCard },
     loading,
     error,
+    refresh: loadBoard,
   };
 }

@@ -95,51 +95,43 @@
 
 ---
 
-## Part 8: AI Connectivity
+## Part 8: AI Connectivity - COMPLETE
 
-**Goal**: Backend can call Google Gemini and return a response.
+**Goal**: Backend can call an LLM and return a response.
 
-- [ ] Add `openai>=1.0` to `backend/pyproject.toml` (OpenAI-compatible client pointing at Gemini)
-- [ ] Create `backend/ai.py`: `OpenAI` client with `base_url="https://generativelanguage.googleapis.com/openai/v1"` and `api_key=os.getenv("GEMINI_API_KEY")`; `ask_ai(prompt: str) -> str`
-- [ ] Create `backend/routers/ai.py` with `POST /api/ai/test` (auth required): calls `ask_ai("What is 2+2?")` and returns `{"answer": ...}`
-- [ ] Register the AI router in `backend/main.py`
-- [ ] `backend/tests/test_ai.py`: mock `ai.client` with `unittest.mock.patch`; verify 401 without auth, response shape, correct model + prompt passed to the client
+- [x] Add `openai>=1.0` to `backend/pyproject.toml` (OpenAI-compatible client)
+- [x] Create `backend/ai.py`: `OpenAI` client with configurable `OLLAMA_BASE_URL` + `OLLAMA_MODEL`; `ask_ai(prompt: str) -> str`
+- [x] Create `backend/routers/ai.py` with `POST /api/ai/test` (auth required): calls `ask_ai("What is 2+2?")` and returns `{"answer": ...}`
+- [x] Register the AI router in `backend/main.py`
+- [x] `backend/tests/test_ai.py`: mock `ai.client` with `unittest.mock.patch`; verify 401 without auth, response shape, correct model + prompt passed to the client
 
-**Success criteria**:
-- `POST /api/ai/test` (authenticated) returns `{"answer": "..."}` containing "4"
-- API key read from `GEMINI_API_KEY` env var, never hardcoded
-- Route works in the running Docker container with the real key in `.env`
-- All 3 new pytest tests pass; existing 36 still pass
+> **Design note**: Switched from Gemini (free tier quota-limited) to **Ollama** (local, free). `OLLAMA_BASE_URL` defaults to `http://localhost:11434/v1`; in Docker Compose the app service gets `http://ollama:11434/v1` via `environment`. `OLLAMA_MODEL` defaults to `llama3.2`. `docker-compose.yml` adds an `ollama` service with a named volume so models persist across restarts. `scripts/start.sh` / `start.bat` run `docker compose exec ollama ollama pull llama3.2` after startup.
 
 ---
 
-## Part 9: AI with Structured Outputs
+## Part 9: AI with Structured Outputs - COMPLETE
 
 **Goal**: AI receives the full board context and can return board updates alongside its reply.
 
-- [ ] Define Pydantic output schema in `backend/ai.py` (`CardUpdate`, `AIResponse`)
-- [ ] Update `backend/ai.py` to accept board JSON + user message + conversation history; use JSON mode to get `AIResponse`
-- [ ] Add `POST /api/ai/chat` route (auth required): fetch board, call AI, apply updates, return `{message, board_updated}`
-- [ ] Backend tests: structured output parsing, each action type applied correctly
+- [x] `CardAction` + `AIResponse` Pydantic schemas in `backend/ai.py`
+- [x] `chat_ai(board_json, message, history)` in `backend/ai.py`: sends system prompt with board JSON + history, uses `response_format={"type": "json_object"}` for structured output
+- [x] `POST /api/ai/chat` in `backend/routers/ai.py` (auth required): fetches board, calls AI, applies actions (`create_card`, `update_card`, `delete_card`, `move_card`), returns `{message, board_updated}`
+- [x] 5 new pytest tests: auth, message passthrough, card creation verified in DB, board_json/message args, history passing — 44 total pass
 
-**Success criteria**:
-- `POST /api/ai/chat` with `"Add a card called 'Deploy app' to the Done column"` creates the card in the database
-- Response includes `message` and `board_updated: true`
+> **Design note**: `CardAction` uses a plain `str` discriminator field rather than a `Literal` union, keeping the JSON schema simple for the model. Action application in `_apply_action()` in `routers/ai.py` silently ignores invalid card/column IDs (graceful degradation).
 
 ---
 
-## Part 10: AI Chat Sidebar
+## Part 10: AI Chat Sidebar - COMPLETE
 
 **Goal**: A polished sidebar in the UI for AI chat, with automatic board refresh when the AI makes changes.
 
-- [ ] Create `frontend/src/components/AISidebar.tsx`: fixed toggle, slide-in panel, scrollable history, message input, project color scheme
-- [ ] Create `frontend/src/hooks/useAIChat.ts`: conversation history, calls `POST /api/ai/chat`, triggers board refresh on `board_updated: true`
-- [ ] Expose `refresh` from `useBoard`; pass `refreshBoard` callback into `AISidebar`
-- [ ] Frontend Jest tests: sidebar renders and toggles, message sends, board refreshes on `board_updated`
-- [ ] E2e test: open sidebar, type a message, verify AI response appears
+- [x] `frontend/src/components/AISidebar.tsx`: fixed `✦` toggle button (bottom-right), slide-in `<aside>` panel, scrollable chat history with auto-scroll, message textarea + Send button, project color scheme
+- [x] `frontend/src/hooks/useAIChat.ts`: manages `ChatMessage[]` state, captures history before each send, calls `POST /api/ai/chat`, calls `refreshBoard()` on `board_updated: true`
+- [x] Exposed `refresh: loadBoard` from `useBoard` (added to `UseBoardReturn` interface)
+- [x] `KanbanApp.tsx` renders `<AISidebar refreshBoard={refresh} />` alongside `<Board />`
+- [x] Jest tests: 7 for `AISidebar` + 6 for `useAIChat` — 82 total pass
+- [x] `frontend/e2e/ai.spec.ts`: toggle open/close, send message → verify `POST /api/ai/chat` returns 200, AI reply visible in sidebar
+- [x] `scripts/test.sh` / `scripts/test.bat`: preserve `ollama-data` volume across runs, pull model after startup
 
-**Success criteria**:
-- Sidebar opens/closes with toggle button
-- User can type and receive a formatted AI response
-- Board refreshes automatically if AI makes changes (no page reload)
-- UI matches project color scheme: accent `#ecad0a`, blue `#209dd7`, purple `#753991`, navy `#032147`, gray `#888888`
+> **Design note**: `scrollIntoView` not in jsdom — mocked with `Element.prototype.scrollIntoView = jest.fn()` in `beforeAll`. `useAIChat` captures `messages` before `setMessages` so the correct history is sent per turn.

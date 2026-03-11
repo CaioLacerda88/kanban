@@ -1,6 +1,7 @@
 'use client';
 
 import { useBoard } from '@/hooks/useBoard';
+import AISidebar from './AISidebar';
 import Board from './Board';
 
 interface Props {
@@ -8,7 +9,7 @@ interface Props {
 }
 
 export default function KanbanApp({ onLogout }: Props) {
-  const { state, actions, loading, error } = useBoard();
+  const { state, actions, loading, error, refresh } = useBoard();
 
   if (loading) {
     return (
@@ -26,5 +27,10 @@ export default function KanbanApp({ onLogout }: Props) {
     );
   }
 
-  return <Board state={state} actions={actions} onLogout={onLogout} />;
+  return (
+    <>
+      <Board state={state} actions={actions} onLogout={onLogout} />
+      <AISidebar refreshBoard={refresh} />
+    </>
+  );
 }
