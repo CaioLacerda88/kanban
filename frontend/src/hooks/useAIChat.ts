@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 
 export interface ChatMessage {
   role: 'user' | 'assistant';
@@ -16,10 +16,12 @@ export interface UseAIChatReturn {
 export function useAIChat(): UseAIChatReturn {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const messagesRef = useRef<ChatMessage[]>(messages);
+  messagesRef.current = messages;
 
   const sendMessage = useCallback(
     async (text: string, refreshBoard: () => void) => {
-      const history = messages; // capture before state update
+      const history = messagesRef.current;
       setMessages((prev) => [...prev, { role: 'user', content: text }]);
       setIsLoading(true);
 
@@ -47,7 +49,7 @@ export function useAIChat(): UseAIChatReturn {
         setIsLoading(false);
       }
     },
-    [messages],
+    [],
   );
 
   return { messages, isLoading, sendMessage };

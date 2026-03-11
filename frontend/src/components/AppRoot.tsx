@@ -27,7 +27,7 @@ export default function AppRoot() {
       <div className="flex items-center justify-center h-screen bg-slate-100 dark:bg-slate-900">
         <div
           className="w-8 h-8 border-4 border-t-transparent rounded-full animate-spin"
-          style={{ borderColor: 'var(--color-blue-primary)', borderTopColor: 'transparent' }}
+          style={{ borderColor: 'var(--color-blue-primary)' }}
         />
       </div>
     );

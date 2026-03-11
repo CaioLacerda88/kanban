@@ -54,7 +54,7 @@ export default function AddCardModal({ columnName, onAdd, onClose }: Props) {
             <h2 id={titleId} className="text-slate-900 dark:text-slate-100 font-semibold text-lg">Add card</h2>
             <button
               onClick={onClose}
-              className="text-slate-400 hover:text-slate-700 dark:text-slate-500 dark:hover:text-slate-200 transition-colors ml-4 mt-0.5 p-0.5 rounded hover:bg-slate-100 dark:hover:bg-slate-700"
+              className="modal-close-btn"
               aria-label="Close"
             >
               <X size={18} />
@@ -63,7 +63,7 @@ export default function AddCardModal({ columnName, onAdd, onClose }: Props) {
           <p className="text-slate-400 dark:text-slate-500 text-sm mb-5">Adding to: {columnName}</p>
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5" htmlFor="card-title">
+              <label className="form-label" htmlFor="card-title">
                 Title
               </label>
               <input
@@ -73,11 +73,11 @@ export default function AddCardModal({ columnName, onAdd, onClose }: Props) {
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="What needs to be done?"
-                className="w-full border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-900 dark:text-slate-100 bg-white dark:bg-slate-700 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-primary/40 dark:focus:ring-sky-500/40 focus:border-blue-primary dark:focus:border-sky-500 transition-shadow"
+                className="input-field"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5" htmlFor="card-details">
+              <label className="form-label" htmlFor="card-details">
                 Details <span className="text-slate-400 dark:text-slate-500 font-normal">(optional)</span>
               </label>
               <textarea
@@ -86,14 +86,14 @@ export default function AddCardModal({ columnName, onAdd, onClose }: Props) {
                 onChange={(e) => setDetails(e.target.value)}
                 placeholder="Add more context..."
                 rows={4}
-                className="w-full border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-900 dark:text-slate-100 bg-white dark:bg-slate-700 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-primary/40 dark:focus:ring-sky-500/40 focus:border-blue-primary dark:focus:border-sky-500 resize-none transition-shadow"
+                className="input-field resize-none"
               />
             </div>
             <div className="flex justify-end gap-3 pt-1">
               <button
                 type="button"
                 onClick={onClose}
-                className="px-4 py-2 text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-colors"
+                className="btn-ghost"
               >
                 Cancel
               </button>

@@ -54,7 +54,7 @@ export default function LoginPage({ onLogin }: Props) {
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               required
-              className="border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-900 dark:text-slate-100 bg-white dark:bg-slate-700 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-primary/40 dark:focus:ring-sky-500/40 focus:border-blue-primary dark:focus:border-sky-500 transition-shadow"
+              className="input-field"
             />
           </div>
           <div className="flex flex-col gap-1.5">
@@ -68,7 +68,7 @@ export default function LoginPage({ onLogin }: Props) {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              className="border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-900 dark:text-slate-100 bg-white dark:bg-slate-700 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-primary/40 dark:focus:ring-sky-500/40 focus:border-blue-primary dark:focus:border-sky-500 transition-shadow"
+              className="input-field"
             />
           </div>
           {error && (
