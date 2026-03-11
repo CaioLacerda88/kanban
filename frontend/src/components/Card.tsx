@@ -39,9 +39,11 @@ export default function Card({ card, columnName, onUpdate, onDelete }: Props) {
         {...listeners}
         onClick={() => !isDragging && setModalOpen(true)}
         className={`
-          group bg-white rounded-lg border-l-4 border-blue-primary shadow-sm px-4 py-3
+          group bg-white dark:bg-slate-800/80 rounded-lg border border-slate-200 dark:border-slate-700/50
+          border-l-4 border-l-blue-primary dark:border-l-sky-500 shadow-sm px-4 py-3
           cursor-grab active:cursor-grabbing select-none
-          hover:shadow-md hover:border-accent-yellow
+          hover:shadow-md hover:border-l-accent-yellow dark:hover:border-l-amber-400
+          hover:border-slate-300 dark:hover:border-slate-600
           transition-all duration-150
           ${isDragging ? 'opacity-40 shadow-xl' : ''}
         `}
@@ -55,9 +57,9 @@ export default function Card({ card, columnName, onUpdate, onDelete }: Props) {
           }
         }}
       >
-        <p className="text-dark-navy text-sm font-medium leading-snug line-clamp-3">{card.title}</p>
+        <p className="text-slate-800 dark:text-slate-100 text-sm font-medium leading-snug line-clamp-3">{card.title}</p>
         {card.details && (
-          <p className="text-gray-text text-xs mt-1.5 line-clamp-2 leading-relaxed">{card.details}</p>
+          <p className="text-slate-500 dark:text-slate-400 text-xs mt-1.5 line-clamp-2 leading-relaxed">{card.details}</p>
         )}
       </div>
 

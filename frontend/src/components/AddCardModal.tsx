@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useId, useRef, useState } from 'react';
+import { X } from 'lucide-react';
 import { useFocusTrap } from '@/hooks/useFocusTrap';
 
 interface Props {
@@ -43,17 +44,26 @@ export default function AddCardModal({ columnName, onAdd, onClose }: Props) {
       aria-labelledby={titleId}
     >
       <div
-        className="modal-backdrop absolute inset-0 bg-black/40 backdrop-blur-sm"
+        className="modal-backdrop absolute inset-0 bg-black/40 dark:bg-black/60 backdrop-blur-sm"
         onClick={onClose}
       />
-      <div className="modal-content relative z-10 w-full max-w-md mx-4 bg-white rounded-xl shadow-2xl overflow-hidden">
-        <div className="h-1 bg-purple-secondary" />
+      <div className="modal-content relative z-10 w-full max-w-md mx-4 bg-white dark:bg-slate-800 rounded-xl shadow-2xl overflow-hidden border border-slate-200/80 dark:border-slate-700/60">
+        <div className="h-1 bg-purple-secondary dark:bg-violet-500" />
         <div className="p-6">
-          <h2 id={titleId} className="text-dark-navy font-semibold text-lg mb-1">Add card</h2>
-          <p className="text-gray-text text-sm mb-5">Adding to: {columnName}</p>
+          <div className="flex items-start justify-between mb-1">
+            <h2 id={titleId} className="text-slate-900 dark:text-slate-100 font-semibold text-lg">Add card</h2>
+            <button
+              onClick={onClose}
+              className="text-slate-400 hover:text-slate-700 dark:text-slate-500 dark:hover:text-slate-200 transition-colors ml-4 mt-0.5 p-0.5 rounded hover:bg-slate-100 dark:hover:bg-slate-700"
+              aria-label="Close"
+            >
+              <X size={18} />
+            </button>
+          </div>
+          <p className="text-slate-400 dark:text-slate-500 text-sm mb-5">Adding to: {columnName}</p>
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             <div>
-              <label className="block text-sm font-medium text-dark-navy mb-1" htmlFor="card-title">
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5" htmlFor="card-title">
                 Title
               </label>
               <input
@@ -63,12 +73,12 @@ export default function AddCardModal({ columnName, onAdd, onClose }: Props) {
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="What needs to be done?"
-                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm text-dark-navy placeholder-gray-text focus:outline-none focus:ring-2 focus:ring-blue-primary focus:border-transparent"
+                className="w-full border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-900 dark:text-slate-100 bg-white dark:bg-slate-700 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-primary/40 dark:focus:ring-sky-500/40 focus:border-blue-primary dark:focus:border-sky-500 transition-shadow"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-dark-navy mb-1" htmlFor="card-details">
-                Details <span className="text-gray-text font-normal">(optional)</span>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5" htmlFor="card-details">
+                Details <span className="text-slate-400 dark:text-slate-500 font-normal">(optional)</span>
               </label>
               <textarea
                 id="card-details"
@@ -76,21 +86,21 @@ export default function AddCardModal({ columnName, onAdd, onClose }: Props) {
                 onChange={(e) => setDetails(e.target.value)}
                 placeholder="Add more context..."
                 rows={4}
-                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm text-dark-navy placeholder-gray-text focus:outline-none focus:ring-2 focus:ring-blue-primary focus:border-transparent resize-none"
+                className="w-full border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-900 dark:text-slate-100 bg-white dark:bg-slate-700 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-primary/40 dark:focus:ring-sky-500/40 focus:border-blue-primary dark:focus:border-sky-500 resize-none transition-shadow"
               />
             </div>
             <div className="flex justify-end gap-3 pt-1">
               <button
                 type="button"
                 onClick={onClose}
-                className="px-4 py-2 text-sm font-medium text-gray-text hover:text-dark-navy transition-colors"
+                className="px-4 py-2 text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-colors"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={!title.trim()}
-                className="px-5 py-2 text-sm font-medium text-white bg-purple-secondary rounded-lg hover:bg-purple-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                className="px-5 py-2 text-sm font-medium text-white bg-purple-secondary hover:bg-violet-700 dark:bg-violet-600 dark:hover:bg-violet-500 disabled:opacity-40 disabled:cursor-not-allowed rounded-lg transition-colors"
               >
                 Add card
               </button>

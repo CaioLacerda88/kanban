@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useId, useRef, useState } from 'react';
+import { X } from 'lucide-react';
 import type { Card } from '@/types/kanban';
 import { useFocusTrap } from '@/hooks/useFocusTrap';
 
@@ -50,28 +51,26 @@ export default function CardModal({ card, columnName, onSave, onDelete, onClose 
       aria-labelledby={titleId}
     >
       <div
-        className="modal-backdrop absolute inset-0 bg-black/40 backdrop-blur-sm"
+        className="modal-backdrop absolute inset-0 bg-black/40 dark:bg-black/60 backdrop-blur-sm"
         onClick={onClose}
       />
-      <div className="modal-content relative z-10 w-full max-w-lg mx-4 bg-white rounded-xl shadow-2xl overflow-hidden">
-        <div className="h-1 bg-blue-primary" />
+      <div className="modal-content relative z-10 w-full max-w-lg mx-4 bg-white dark:bg-slate-800 rounded-xl shadow-2xl overflow-hidden border border-slate-200/80 dark:border-slate-700/60">
+        <div className="h-1 bg-blue-primary dark:bg-sky-500" />
         <div className="p-6">
           <div className="flex items-start justify-between mb-1">
-            <h2 id={titleId} className="text-dark-navy font-semibold text-lg">Edit card</h2>
+            <h2 id={titleId} className="text-slate-900 dark:text-slate-100 font-semibold text-lg">Edit card</h2>
             <button
               onClick={onClose}
-              className="text-gray-text hover:text-dark-navy transition-colors ml-4 mt-0.5"
+              className="text-slate-400 hover:text-slate-700 dark:text-slate-500 dark:hover:text-slate-200 transition-colors ml-4 mt-0.5 p-0.5 rounded hover:bg-slate-100 dark:hover:bg-slate-700"
               aria-label="Close"
             >
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
-                <path d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" />
-              </svg>
+              <X size={18} />
             </button>
           </div>
-          <p className="text-gray-text text-sm mb-5">{columnName}</p>
+          <p className="text-slate-400 dark:text-slate-500 text-sm mb-5">{columnName}</p>
           <div className="flex flex-col gap-4">
             <div>
-              <label className="block text-sm font-medium text-dark-navy mb-1" htmlFor="edit-title">
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5" htmlFor="edit-title">
                 Title
               </label>
               <input
@@ -80,11 +79,11 @@ export default function CardModal({ card, columnName, onSave, onDelete, onClose 
                 type="text"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm text-dark-navy focus:outline-none focus:ring-2 focus:ring-blue-primary focus:border-transparent"
+                className="w-full border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-900 dark:text-slate-100 bg-white dark:bg-slate-700 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-primary/40 dark:focus:ring-sky-500/40 focus:border-blue-primary dark:focus:border-sky-500 transition-shadow"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-dark-navy mb-1" htmlFor="edit-details">
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5" htmlFor="edit-details">
                 Details
               </label>
               <textarea
@@ -93,19 +92,19 @@ export default function CardModal({ card, columnName, onSave, onDelete, onClose 
                 onChange={(e) => setDetails(e.target.value)}
                 rows={5}
                 placeholder="Add details..."
-                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm text-dark-navy placeholder-gray-text focus:outline-none focus:ring-2 focus:ring-blue-primary focus:border-transparent resize-none"
+                className="w-full border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-900 dark:text-slate-100 bg-white dark:bg-slate-700 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-primary/40 dark:focus:ring-sky-500/40 focus:border-blue-primary dark:focus:border-sky-500 resize-none transition-shadow"
               />
             </div>
           </div>
 
           {confirming ? (
-            <div className="mt-6 pt-4 border-t border-red-100 bg-red-50 -mx-6 -mb-6 px-6 pb-6 rounded-b-xl">
-              <p className="text-dark-navy font-medium text-sm">Delete this card?</p>
-              <p className="text-gray-text text-sm mt-0.5 mb-4">This cannot be undone.</p>
+            <div className="mt-6 pt-4 border-t border-red-100 dark:border-red-900/40 bg-red-50 dark:bg-red-900/20 -mx-6 -mb-6 px-6 pb-6 rounded-b-xl">
+              <p className="text-slate-800 dark:text-slate-200 font-medium text-sm">Delete this card?</p>
+              <p className="text-slate-500 dark:text-slate-400 text-sm mt-0.5 mb-4">This cannot be undone.</p>
               <div className="flex justify-end gap-3">
                 <button
                   onClick={() => setConfirming(false)}
-                  className="px-4 py-2 text-sm font-medium text-gray-text hover:text-dark-navy transition-colors"
+                  className="px-4 py-2 text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-colors"
                 >
                   Keep
                 </button>
@@ -118,24 +117,24 @@ export default function CardModal({ card, columnName, onSave, onDelete, onClose 
               </div>
             </div>
           ) : (
-            <div className="flex items-center justify-between mt-6 pt-4 border-t border-gray-100">
+            <div className="flex items-center justify-between mt-6 pt-4 border-t border-slate-100 dark:border-slate-700/60">
               <button
                 onClick={() => setConfirming(true)}
-                className="px-4 py-2 text-sm font-medium text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors"
+                className="px-4 py-2 text-sm font-medium text-red-500 hover:text-red-600 dark:text-red-400 dark:hover:text-red-300 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
               >
                 Delete card
               </button>
               <div className="flex gap-3">
                 <button
                   onClick={onClose}
-                  className="px-4 py-2 text-sm font-medium text-gray-text hover:text-dark-navy transition-colors"
+                  className="px-4 py-2 text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleSave}
                   disabled={!title.trim()}
-                  className="px-5 py-2 text-sm font-medium text-white bg-purple-secondary rounded-lg hover:bg-purple-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                  className="px-5 py-2 text-sm font-medium text-white bg-purple-secondary hover:bg-violet-700 dark:bg-violet-600 dark:hover:bg-violet-500 disabled:opacity-40 disabled:cursor-not-allowed rounded-lg transition-colors"
                 >
                   Save
                 </button>

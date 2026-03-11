@@ -11,10 +11,12 @@ import {
   type DragEndEvent,
   type DragStartEvent,
 } from '@dnd-kit/core';
+import { LogOut } from 'lucide-react';
 import type { BoardState, Card as CardType } from '@/types/kanban';
 import type { BoardActions } from '@/hooks/useBoard';
 import { resolveDrop } from '@/lib/dnd-utils';
 import Column from './Column';
+import ThemeToggle from './ThemeToggle';
 
 interface Props {
   state: BoardState;
@@ -50,26 +52,29 @@ export default function Board({ state, actions, onLogout }: Props) {
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
     >
-      <div className="min-h-screen bg-dark-navy flex flex-col">
+      <div className="min-h-screen bg-slate-100 dark:bg-slate-900 flex flex-col">
         {/* Header */}
-        <header className="px-8 py-5 flex items-center gap-3 shrink-0 border-b border-white/5">
-          <div className="w-1 h-7 bg-accent-yellow rounded-full" />
-          <h1 className="text-white font-bold text-xl tracking-tight">Project Board</h1>
-          <span className="ml-auto text-white/30 text-xs font-medium tabular-nums">
+        <header className="px-6 py-4 flex items-center gap-3 shrink-0 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700/60 shadow-sm dark:shadow-none">
+          <div className="w-1 h-6 bg-accent-yellow rounded-full" />
+          <h1 className="text-slate-900 dark:text-white font-bold text-lg tracking-tight">Project Board</h1>
+          <span className="ml-auto text-slate-400 dark:text-slate-500 text-xs font-medium tabular-nums">
             {totalCards} {totalCards === 1 ? 'card' : 'cards'}
           </span>
+          <ThemeToggle />
           {onLogout && (
             <button
               onClick={onLogout}
-              className="ml-4 text-white/40 hover:text-white/80 text-xs font-medium transition-colors cursor-pointer"
+              aria-label="Sign out"
+              title="Sign out"
+              className="p-2 rounded-lg text-slate-400 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
             >
-              Sign out
+              <LogOut size={16} />
             </button>
           )}
         </header>
 
         {/* Board */}
-        <main className="flex-1 px-8 pt-6 pb-8 overflow-x-auto">
+        <main className="flex-1 px-6 pt-6 pb-8 overflow-x-auto">
           <div className="flex gap-4 h-full min-w-max">
             {state.columns.map((col) => {
               const cards = col.cardIds.map((id) => state.cards[id]).filter(Boolean);
@@ -88,10 +93,10 @@ export default function Board({ state, actions, onLogout }: Props) {
 
       <DragOverlay dropAnimation={null}>
         {activeCard ? (
-          <div className="bg-white rounded-lg border-l-4 border-accent-yellow shadow-2xl px-4 py-3 w-72 rotate-2 opacity-95 cursor-grabbing">
-            <p className="text-dark-navy text-sm font-medium leading-snug line-clamp-3">{activeCard.title}</p>
+          <div className="bg-white dark:bg-slate-800 rounded-lg border-l-4 border-accent-yellow shadow-2xl px-4 py-3 w-72 rotate-2 opacity-95 cursor-grabbing">
+            <p className="text-slate-900 dark:text-slate-100 text-sm font-medium leading-snug line-clamp-3">{activeCard.title}</p>
             {activeCard.details && (
-              <p className="text-gray-text text-xs mt-1.5 line-clamp-2 leading-relaxed">{activeCard.details}</p>
+              <p className="text-slate-500 dark:text-slate-400 text-xs mt-1.5 line-clamp-2 leading-relaxed">{activeCard.details}</p>
             )}
           </div>
         ) : null}

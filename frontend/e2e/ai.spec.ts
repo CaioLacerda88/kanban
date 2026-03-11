@@ -24,7 +24,8 @@ test.describe('AI Sidebar', () => {
     await expect(page.getByRole('heading', { name: /ai assistant/i })).not.toBeVisible();
   });
 
-  test('sends a message and calls POST /api/ai/chat', { timeout: 90_000 }, async ({ page }) => {
+  test('sends a message and calls POST /api/ai/chat', async ({ page }) => {
+    test.setTimeout(90_000);
     await page.getByRole('button', { name: /open ai chat/i }).click();
 
     const aiResponse = page.waitForResponse(

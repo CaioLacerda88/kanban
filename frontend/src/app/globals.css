@@ -1,11 +1,13 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
-  --color-accent-yellow: #ecad0a;
-  --color-blue-primary: #209dd7;
-  --color-purple-secondary: #753991;
-  --color-dark-navy: #032147;
-  --color-gray-text: #888888;
+  --color-accent-yellow: #f59e0b;
+  --color-blue-primary: #0ea5e9;
+  --color-purple-secondary: #7c3aed;
+  --color-dark-navy: #0f172a;
+  --color-gray-text: #64748b;
 }
 
 * {
@@ -27,12 +29,20 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.15);
+  background: rgba(0, 0, 0, 0.12);
   border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 0, 0, 0.25);
+  background: rgba(0, 0, 0, 0.22);
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.22);
 }
 
 @keyframes modal-fade-in {

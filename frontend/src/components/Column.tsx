@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useDroppable } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
+import { Pencil, Plus } from 'lucide-react';
 import type { Card as CardType, Column as ColumnType } from '@/types/kanban';
 import type { BoardActions } from '@/hooks/useBoard';
 import Card from './Card';
@@ -27,7 +28,6 @@ export default function Column({ column, cards, actions }: Props) {
     if (editing) inputRef.current?.select();
   }, [editing]);
 
-  // Keep local value in sync if column is renamed externally
   useEffect(() => {
     if (!editing) setNameValue(column.name);
   }, [column.name, editing]);
@@ -56,7 +56,11 @@ export default function Column({ column, cards, actions }: Props) {
 
   return (
     <>
-      <div className="flex flex-col w-72 min-w-72 bg-gray-50 rounded-xl shadow-sm overflow-hidden" data-testid="column" data-column-name={column.name}>
+      <div
+        className="flex flex-col w-72 min-w-72 bg-white dark:bg-slate-800 rounded-xl shadow-sm dark:shadow-slate-900/50 overflow-hidden border border-slate-200/60 dark:border-slate-700/50"
+        data-testid="column"
+        data-column-name={column.name}
+      >
         {/* Column header */}
         <div className="px-4 pt-4 pb-3 flex items-center justify-between gap-2">
           {editing ? (
@@ -66,28 +70,23 @@ export default function Column({ column, cards, actions }: Props) {
               onChange={(e) => setNameValue(e.target.value)}
               onBlur={handleBlur}
               onKeyDown={handleKeyDown}
-              className="flex-1 text-dark-navy font-semibold text-sm bg-white border border-blue-primary rounded px-2 py-0.5 focus:outline-none"
+              className="flex-1 text-slate-900 dark:text-slate-100 font-semibold text-sm bg-white dark:bg-slate-700 border border-blue-primary dark:border-sky-500 rounded px-2 py-0.5 focus:outline-none focus:ring-2 focus:ring-blue-primary/30 dark:focus:ring-sky-500/30"
               aria-label="Rename column"
             />
           ) : (
             <button
               onClick={() => setEditing(true)}
-              className="group/header flex-1 flex items-center gap-1.5 text-left text-dark-navy font-semibold text-sm hover:text-blue-primary transition-colors truncate"
+              className="group/header flex-1 flex items-center gap-1.5 text-left text-slate-700 dark:text-slate-200 font-semibold text-sm hover:text-blue-primary dark:hover:text-sky-400 transition-colors truncate"
               title="Click to rename"
             >
               <span className="truncate">{column.name}</span>
-              <svg
-                width="12"
-                height="12"
-                viewBox="0 0 12 12"
-                fill="currentColor"
+              <Pencil
+                size={11}
                 className="shrink-0 opacity-0 group-hover/header:opacity-50 transition-opacity"
-              >
-                <path d="M9.707 0.293a1 1 0 00-1.414 0L1 7.586V11h3.414l7.293-7.293a1 1 0 000-1.414l-2-2zM2.5 9.5v-1.086l5-5 1.086 1.086-5 5H2.5z" />
-              </svg>
+              />
             </button>
           )}
-          <span className="text-gray-text text-xs font-medium bg-gray-200 rounded-full px-2 py-0.5 shrink-0">
+          <span className="text-slate-500 dark:text-slate-400 text-xs font-medium bg-slate-100 dark:bg-slate-700/60 rounded-full px-2 py-0.5 shrink-0 tabular-nums">
             {cards.length}
           </span>
         </div>
@@ -101,8 +100,8 @@ export default function Column({ column, cards, actions }: Props) {
             ref={setNodeRef}
             className={`
               flex-1 px-3 overflow-y-auto max-h-[calc(100vh-220px)] flex flex-col gap-2 pb-3 min-h-16
-              transition-colors duration-150
-              ${isOver ? 'bg-blue-50' : ''}
+              transition-colors duration-150 rounded-lg
+              ${isOver ? 'bg-sky-50 dark:bg-sky-900/20' : ''}
             `}
           >
             {cards.map((card) => (
@@ -118,14 +117,12 @@ export default function Column({ column, cards, actions }: Props) {
         </SortableContext>
 
         {/* Add card button */}
-        <div className="px-3 py-3 border-t border-gray-100">
+        <div className="px-3 py-3 border-t border-slate-100 dark:border-slate-700/50">
           <button
             onClick={() => setAddingCard(true)}
-            className="w-full text-left text-gray-text text-sm hover:text-blue-primary hover:bg-white rounded-lg px-3 py-2 transition-colors flex items-center gap-2"
+            className="w-full text-left text-slate-400 dark:text-slate-500 text-sm hover:text-blue-primary dark:hover:text-sky-400 hover:bg-slate-50 dark:hover:bg-slate-700/50 rounded-lg px-3 py-2 transition-colors flex items-center gap-2"
           >
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor">
-              <path d="M7 1a1 1 0 011 1v4h4a1 1 0 110 2H8v4a1 1 0 11-2 0V8H2a1 1 0 110-2h4V2a1 1 0 011-1z" />
-            </svg>
+            <Plus size={14} />
             Add card
           </button>
         </div>
