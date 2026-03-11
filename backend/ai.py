@@ -64,10 +64,17 @@ def chat_ai(board_json: str, message: str, history: list[dict]) -> AIResponse:
     messages.extend(history)
     messages.append({"role": "user", "content": message})
 
-    response = client.chat.completions.create(
-        model=OLLAMA_MODEL,
-        messages=messages,
-        response_format={"type": "json_object"},
-    )
-    data = json.loads(response.choices[0].message.content)
-    return AIResponse(**data)
+    try:
+        response = client.chat.completions.create(
+            model=OLLAMA_MODEL,
+            messages=messages,
+            response_format={"type": "json_object"},
+        )
+        data = json.loads(response.choices[0].message.content)
+        return AIResponse(**data)
+    except Exception:
+        # Covers: Ollama unreachable, malformed JSON, schema mismatch
+        return AIResponse(
+            message="I'm having trouble connecting to the AI. Please try again.",
+            actions=[],
+        )

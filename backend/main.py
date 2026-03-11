@@ -1,3 +1,4 @@
+import os
 from contextlib import asynccontextmanager
 from pathlib import Path
 
@@ -13,6 +14,11 @@ from routers.kanban import router as kanban_router
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    if not os.getenv("SECRET_KEY"):
+        raise ValueError(
+            "SECRET_KEY environment variable is not set. "
+            "Copy .env.example to .env and set a secure value."
+        )
     init_db()
     yield
 

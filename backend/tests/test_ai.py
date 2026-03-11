@@ -111,3 +111,29 @@ def test_chat_passes_history(client):
 
     _, _, history_arg = mock_fn.call_args.args
     assert history_arg == history
+
+
+def test_chat_ai_handles_malformed_json(client):
+    """chat_ai() returns a graceful error response when Ollama returns non-JSON."""
+    mock_completion = MagicMock()
+    mock_completion.choices[0].message.content = "Sorry, I don't understand JSON."
+
+    with patch("ai.client") as mock_client:
+        mock_client.chat.completions.create.return_value = mock_completion
+        r = client.post("/api/ai/chat", json={"message": "hello"})
+
+    assert r.status_code == 200
+    body = r.json()
+    assert "message" in body
+    assert body["board_updated"] is False
+    assert len(body["message"]) > 0
+
+
+def test_chat_ai_handles_ollama_connection_error(client):
+    """chat_ai() returns a graceful error response when Ollama is unreachable."""
+    with patch("ai.client") as mock_client:
+        mock_client.chat.completions.create.side_effect = Exception("Connection refused")
+        r = client.post("/api/ai/chat", json={"message": "hello"})
+
+    assert r.status_code == 200
+    assert r.json()["board_updated"] is False

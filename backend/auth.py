@@ -4,7 +4,6 @@ from datetime import datetime, timedelta, timezone
 import jwt
 from fastapi import Cookie, HTTPException
 
-SECRET_KEY = os.getenv("SECRET_KEY", "dev-secret-key-replace-in-production-32b")
 ALGORITHM = "HS256"
 TOKEN_EXPIRE_HOURS = 24
 
@@ -12,17 +11,22 @@ TOKEN_EXPIRE_HOURS = 24
 CREDENTIALS = {"user": "password"}
 
 
+def _secret_key() -> str:
+    """Read SECRET_KEY at call time so tests can patch the env var after import."""
+    return os.getenv("SECRET_KEY", "")
+
+
 def create_token(username: str) -> str:
     payload = {
         "sub": username,
         "exp": datetime.now(timezone.utc) + timedelta(hours=TOKEN_EXPIRE_HOURS),
     }
-    return jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
+    return jwt.encode(payload, _secret_key(), algorithm=ALGORITHM)
 
 
 def decode_token(token: str) -> str:
     try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        payload = jwt.decode(token, _secret_key(), algorithms=[ALGORITHM])
         return payload["sub"]
     except jwt.PyJWTError:
         raise HTTPException(status_code=401, detail="Invalid token")

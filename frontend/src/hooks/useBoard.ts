@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { api, boardFromApi } from '@/lib/api';
 import { moveCard as moveFn } from '@/lib/dnd-utils';
 import type { BoardState, Card } from '@/types/kanban';
@@ -26,6 +26,10 @@ export function useBoard(): UseBoardReturn {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Always-current ref so action callbacks can capture prev state without stale closures
+  const stateRef = useRef(state);
+  stateRef.current = state;
+
   const loadBoard = useCallback(async () => {
     try {
       const data = await api.getBoard();
@@ -44,13 +48,14 @@ export function useBoard(): UseBoardReturn {
 
   const renameColumn = useCallback(
     (columnId: string, name: string) => {
-      setState((s) => ({
-        ...s,
-        columns: s.columns.map((col) => (col.id === columnId ? { ...col, name } : col)),
-      }));
-      api.renameColumn(columnId, name).catch(loadBoard);
+      const prev = stateRef.current;
+      setState({
+        ...prev,
+        columns: prev.columns.map((col) => (col.id === columnId ? { ...col, name } : col)),
+      });
+      api.renameColumn(columnId, name).catch(() => setState(prev));
     },
-    [loadBoard],
+    [],
   );
 
   const addCard = useCallback(
@@ -77,39 +82,37 @@ export function useBoard(): UseBoardReturn {
 
   const updateCard = useCallback(
     (cardId: string, patch: Partial<Omit<Card, 'id'>>) => {
-      setState((s) => ({
-        ...s,
-        cards: { ...s.cards, [cardId]: { ...s.cards[cardId], ...patch } },
-      }));
-      api.updateCard(cardId, patch).catch(loadBoard);
+      const prev = stateRef.current;
+      setState({ ...prev, cards: { ...prev.cards, [cardId]: { ...prev.cards[cardId], ...patch } } });
+      api.updateCard(cardId, patch).catch(() => setState(prev));
     },
-    [loadBoard],
+    [],
   );
 
   const deleteCard = useCallback(
     (cardId: string) => {
-      setState((s) => {
-        const { [cardId]: _, ...cards } = s.cards;
-        return {
-          ...s,
-          cards,
-          columns: s.columns.map((col) => ({
-            ...col,
-            cardIds: col.cardIds.filter((id) => id !== cardId),
-          })),
-        };
+      const prev = stateRef.current;
+      const { [cardId]: _, ...cards } = prev.cards;
+      setState({
+        ...prev,
+        cards,
+        columns: prev.columns.map((col) => ({
+          ...col,
+          cardIds: col.cardIds.filter((id) => id !== cardId),
+        })),
       });
-      api.deleteCard(cardId).catch(loadBoard);
+      api.deleteCard(cardId).catch(() => setState(prev));
     },
-    [loadBoard],
+    [],
   );
 
   const moveCard = useCallback(
     (cardId: string, toColumnId: string, toIndex: number) => {
-      setState((s) => moveFn(s, cardId, toColumnId, toIndex));
-      api.moveCard(cardId, toColumnId, toIndex).catch(loadBoard);
+      const prev = stateRef.current;
+      setState(moveFn(prev, cardId, toColumnId, toIndex));
+      api.moveCard(cardId, toColumnId, toIndex).catch(() => setState(prev));
     },
-    [loadBoard],
+    [],
   );
 
   return {

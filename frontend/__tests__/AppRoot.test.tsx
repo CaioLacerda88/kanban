@@ -16,10 +16,10 @@ beforeEach(() => { global.fetch = jest.fn(); });
 afterEach(() => { jest.restoreAllMocks(); });
 
 describe('AppRoot', () => {
-  it('renders nothing while checking auth', () => {
+  it('renders a loading spinner while checking auth', () => {
     (global.fetch as jest.Mock).mockReturnValueOnce(new Promise(() => {}));
-    const { container } = render(<AppRoot />);
-    expect(container.firstChild).toBeNull();
+    render(<AppRoot />);
+    expect(document.querySelector('.animate-spin')).toBeInTheDocument();
   });
 
   it('shows login page when not authenticated', async () => {
